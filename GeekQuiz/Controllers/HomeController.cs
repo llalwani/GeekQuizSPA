@@ -43,5 +43,15 @@ namespace GeekQuiz.Controllers
 
             return View();
         }
+
+
+        public ActionResult Angular()
+        {
+            ViewBag.Message = "Your Angular page.";
+
+            return View();
+        }
+
+
     }
 }
