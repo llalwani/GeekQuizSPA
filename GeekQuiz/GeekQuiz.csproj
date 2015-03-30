@@ -199,12 +199,16 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\geekquizfriday.pubxml" />
     <None Include="Properties\PublishProfiles\geektuesday.pubxml" />
     <None Include="Properties\PublishProfiles\gekkquizfriday.pubxml" />
     <None Include="Properties\PublishProfiles\thebeebsgeekquiz.pubxml" />
+    <Content Include="Scripts\angular.min.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ember-1.0.0.debug.js" />
     <Content Include="Scripts\ember-1.0.0.js" />
