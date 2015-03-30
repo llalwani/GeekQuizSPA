@@ -2,6 +2,67 @@
 @{
     ViewBag.Title = "Angular";
 }
+<div ng-app="geekQuizApp" id="bodyContainer" >
+    <section id="content">
+        <div class="container">
+            <div ng-controller="GeekQuizController as geekquiz"
+                 class="row">
+                <div class="flip-container text-center col-md-12">
+                    <div class="back" ng-class="{flip:geekquiz.question.answered}">
+                        <p class="lead">
+                            {{geekquiz.answer}}
+                        </p>
+                        <p>
+                            <button class="btn btn-info btn-lg next option"
+                                    ng-click="geekquiz.nextQuestion()">
+                                Next Question
+                            </button>
+                        </p>
+                    </div>
+                    <div class="front" ng-class="{flip:geekquiz.question.answered}">
+                        <p class="lead">
+                            {{geekquiz.question.title}}
+                        </p>
+                        <div class="row text-center">
+                            <button ng-repeat="option in geekquiz.question.options"
+                                    class="btn btn-info btn-lg option"
+                                    ng-click="geekquiz.sendAnswer(geekquiz.question, option)">
+                                {{option.title}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+        @section Scripts {
+            <script src="@Url.Content("~/Scripts/angular.min.js")"></script>
+            <script>
+                angular.module('geekQuizApp', [])
+                .controller('GeekQuizController', function () {
+                    var controller = this;
+                    this.question = { title: "Question", answered: false, answer: "Correct" };
+                    this.answer = null;   
+                    this.nextQuestion = function () {
+                        jQuery.getJSON("/api/trivia", function (response) {
+                            controller.question.title = response.title;
+                            controller.question.id = response.id;
+                            controller.question.options = response.options;
+                        }).fail(function () { controller.question.set('title', "Oops... something went wrong") });
+                    };
 
-<h2>Angular</h2>
+                    this.sendAnswer = function (question, option) {
+                        alert(question.id);
+                        jQuery.post('/api/trivia', { 'questionId': question.id, 'optionId': option.id }, function (response) {
+                            controller.answer = response ? 'correct' : 'incorrect';
+                            controller.question.answered = true;
+                        });
+                    };
+                    this.nextQuestion();
+                    this.nextQuestion();
+                })
+            </script>
+        }
+
 
