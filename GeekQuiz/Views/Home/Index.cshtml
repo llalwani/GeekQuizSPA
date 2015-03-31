@@ -65,7 +65,7 @@
 
                 // prevent multiple posts for the same question
                 jQuery('.front button').attr('disabled', 'disabled');
-
+              
                 jQuery.post('/api/trivia', { 'questionId': question.id, 'optionId': option.id }, function (response) {
                     controller.set('answer', response ? 'correct' : 'incorrect');
                     controller.set('question.answered', true);
