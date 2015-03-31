@@ -8,25 +8,25 @@
             <div ng-controller="GeekQuizController as geekquiz"
                  class="row">
                 <div class="flip-container text-center col-md-12">
-                    <div class="back" ng-class="{flip:geekquiz.question.answered}">
+                    <div class="back" ng-class="{flip:question.answered}">
                         <p class="lead">
-                            {{geekquiz.answer}}
+                            {{question.answer}}
                         </p>
                         <p>
-                            <button class="btn btn-info btn-lg next option"
-                                    ng-click="geekquiz.nextQuestion()">
+                            <button class="btn btn-info btn-lg"
+                                    ng-click="nextQuestion()">
                                 Next Question
                             </button>
                         </p>
                     </div>
-                    <div class="front" ng-class="{flip:geekquiz.question.answered}">
+                    <div class="front" ng-class="{flip:question.answered}">
                         <p class="lead">
-                            {{geekquiz.question.title}}
+                           {{question.title}}
                         </p>
                         <div class="row text-center">
-                            <button ng-repeat="option in geekquiz.question.options"
+                            <button ng-repeat="option in question.options"
                                     class="btn btn-info btn-lg option"
-                                    ng-click="geekquiz.sendAnswer(geekquiz.question, option)">
+                                    ng-click="sendAnswer(question, option)">
                                 {{option.title}}
                             </button>
                         </div>
@@ -40,28 +40,33 @@
             <script src="@Url.Content("~/Scripts/angular.min.js")"></script>
             <script>
                 angular.module('geekQuizApp', [])
-                .controller('GeekQuizController', function () {
+                .controller('GeekQuizController', function ($scope, $http) {
                     var controller = this;
-                    this.question = { title: "Question", answered: false, answer: "Correct" };
-                    this.answer = null;   
-                    this.nextQuestion = function () {
-                        jQuery.getJSON("/api/trivia", function (response) {
-                            controller.question.title = response.title;
-                            controller.question.id = response.id;
-                            controller.question.options = response.options;
-                        }).fail(function () { controller.question.set('title', "Oops... something went wrong") });
-                    };
-
-                    this.sendAnswer = function (question, option) {
-                        alert(question.id);
-                        jQuery.post('/api/trivia', { 'questionId': question.id, 'optionId': option.id }, function (response) {
-                            controller.answer = response ? 'correct' : 'incorrect';
-                            controller.question.answered = true;
+                    $scope.question = { title: "Interesting", answered: false, answer: "Correct" };
+                    $scope.answer = null;
+                    $scope.nextQuestion = function () {
+                        console.log("next Question");
+                        $http.get('/api/trivia').success(function (response) {
+                            $scope.question.title = response.title;
+                            $scope.question.id = response.id;
+                            $scope.question.options = response.options;
+                            $scope.question.answered = false;
                         });
                     };
-                    this.nextQuestion();
-                    this.nextQuestion();
-                })
+                    $scope.sendAnswer = function (question, option) {
+                        console.log("Send Answer");
+                        console.log(question.id)
+                        console.log(option.id)
+                        $http.post('/api/trivia', { 'questionId': question.id, 'optionId': option.id }).
+                          success(function (response, status, headers, config) {
+                              console.log("Got Response");
+                              console.log("Got Response " + response);
+                              $scope.answer = response ? 'correct' : 'incorrect';
+                              $scope.question.answered = true;
+                          });
+                    };
+                    $scope.nextQuestion();
+                });
             </script>
         }
 
